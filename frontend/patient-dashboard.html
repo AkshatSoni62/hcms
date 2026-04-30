@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HCMS - Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-portal.css">
+</head>
+
+<body>
+    <div class="portal-container">
+        <!-- Sidebar injected here -->
+
+        <main class="content-area">
+            <div style="max-width: 1000px; margin: 0 auto;">
+                <header style="margin-bottom: 32px;">
+                    <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">Welcome Back, <span
+                            id="user-name-greeting">Patient</span></h2>
+                    <p style="color: var(--text-muted);">Here's a summary of your portal activity.</p>
+                </header>
+
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 40px;">
+                    <div class="modern-card" style="text-align: center;">
+                        <div
+                            style="font-size: 14px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
+                            My Complaints</div>
+                        <div id="stat-my-complaints" style="font-size: 32px; font-weight: 800; color: var(--primary);">0
+                        </div>
+                    </div>
+                    <div class="modern-card" style="text-align: center;">
+                        <div
+                            style="font-size: 14px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
+                            Unread Notifications</div>
+                        <div id="stat-unread-notifs" style="font-size: 32px; font-weight: 800; color: var(--danger);">0
+                        </div>
+                    </div>
+                </div>
+
+                <section style="margin-bottom: 40px;">
+                    <h3 style="margin-bottom: 20px;">Complaint Categories</h3>
+                    <div class="category-grid">
+                        <a href="feed.html?category=Room Hygiene" class="category-card" data-category="Room Hygiene">
+                            <i class="fas fa-bed"></i>
+                            <span>Room Hygiene</span>
+                        </a>
+                        <a href="feed.html?category=Bathroom / Toilet Issues" class="category-card"
+                            data-category="Bathroom / Toilet Issues">
+                            <i class="fas fa-restroom"></i>
+                            <span>Bathroom / Toilet Issues</span>
+                        </a>
+                        <a href="feed.html?category=Electricity Problems" class="category-card"
+                            data-category="Electricity Problems">
+                            <i class="fas fa-bolt"></i>
+                            <span>Electricity Problems</span>
+                        </a>
+                        <a href="feed.html?category=Water Supply Issues" class="category-card"
+                            data-category="Water Supply Issues">
+                            <i class="fas fa-faucet"></i>
+                            <span>Water Supply Issues</span>
+                        </a>
+                        <a href="feed.html?category=Internet / WiFi Problems" class="category-card"
+                            data-category="Internet / WiFi Problems">
+                            <i class="fas fa-wifi"></i>
+                            <span>Internet / WiFi Problems</span>
+                        </a>
+                        <a href="feed.html?category=Mess / Food Issues" class="category-card"
+                            data-category="Mess / Food Issues">
+                            <i class="fas fa-utensils"></i>
+                            <span>Mess / Food Issues</span>
+                        </a>
+                        <a href="feed.html?category=Furniture / Room Damage" class="category-card"
+                            data-category="Furniture / Room Damage">
+                            <i class="fas fa-couch"></i>
+                            <span>Furniture / Room Damage</span>
+                        </a>
+                        <a href="feed.html?category=Noise / Disturbance" class="category-card"
+                            data-category="Noise / Disturbance">
+                            <i class="fas fa-volume-up"></i>
+                            <span>Noise / Disturbance</span>
+                        </a>
+                        <a href="feed.html?category=Security Issues" class="category-card"
+                            data-category="Security Issues">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Security Issues</span>
+                        </a>
+                        <a href="feed.html?category=Other Complaints" class="category-card"
+                            data-category="Other Complaints">
+                            <i class="fas fa-comment-dots"></i>
+                            <span>Other Complaints</span>
+                        </a>
+                    </div>
+                </section>
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+                    <section>
+                        <h3 style="margin-bottom: 20px;">Recent Activity</h3>
+                        <div id="recent-activity" class="modern-card" style="padding: 0;">
+                            <div style="padding: 24px; text-align: center; color: var(--text-muted);">Loading
+                                activity...</div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h3 style="margin-bottom: 20px;">Quick Actions</h3>
+                        <div class="modern-card" style="display: flex; flex-direction: column; gap: 16px;">
+                            <a href="feed.html" class="action-card-btn primary">
+                                <i class="fas fa-plus-circle"></i>
+                                Submit a Complaint
+                            </a>
+                            <a href="profile.html" class="action-card-btn secondary">
+                                <i class="fas fa-user-edit"></i>
+                                Update Profile
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { injectSidebar } from './js/components/sidebar.js';
+        import { fetchComplaintsFiltered, getUnreadNotificationCount } from './js/api.js';
+
+        injectSidebar('dashboard');
+
+        const user = JSON.parse(localStorage.getItem('hcmsUser'));
+        if (user) {
+            document.getElementById('user-name-greeting').textContent = user.fullName.split(' ')[0];
+        }
+
+        const loadStats = async () => {
+            try {
+                const complaints = await fetchComplaintsFiltered();
+                const myComplaints = complaints.filter(c => c.user?.id === user.id);
+                document.getElementById('stat-my-complaints').textContent = myComplaints.length;
+
+
+                const unread = await getUnreadNotificationCount(user.id);
+                document.getElementById('stat-unread-notifs').textContent = unread;
+
+                // Load recent activity (mix of complaints and appointments)
+                const container = document.getElementById('recent-activity');
+                container.innerHTML = '';
+
+                const activities = [
+                    ...myComplaints.map(c => ({ type: 'COMPLAINT', title: c.title, date: c.createdAt, status: c.status })),
+                ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+
+                if (activities.length === 0) {
+                    container.innerHTML = '<div style="padding: 24px; text-align: center;">No recent activity.</div>';
+                    return;
+                }
+
+                activities.forEach(act => {
+                    const row = document.createElement('div');
+                    row.style.cssText = 'padding: 16px 24px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;';
+                    row.innerHTML = `
+                        <div>
+                            <div style="font-weight: 600; font-size: 14px;">${act.title}</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">${act.type} • ${new Date(act.date).toLocaleDateString()}</div>
+                        </div>
+                        <span class="status-badge status-${act.status}" style="font-size: 10px; padding: 4px 8px;">${act.status}</span>
+                    `;
+                    container.appendChild(row);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
+        loadStats();
+    </script>
+</body>
+
+</html>

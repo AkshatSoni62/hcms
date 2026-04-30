@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HCMS - My Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-portal.css">
+</head>
+
+<body>
+    <div class="portal-container">
+        <!-- Sidebar injected here -->
+
+        <main class="content-area">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
+                    <div>
+                        <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">My Profile</h2>
+                        <p style="color: var(--text-muted);">Manage your personal information and medical history.</p>
+                    </div>
+                    <a href="profile-edit.html" class="btn-submit"
+                        style="width: auto; padding: 10px 20px; text-decoration: none;">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </a>
+                </div>
+
+                <div class="modern-card profile-card"
+                    style="padding: 0; overflow: hidden; border: none; box-shadow: var(--shadow-lg);">
+                    <div class="profile-banner"
+                        style="height: 160px; background: linear-gradient(135deg, var(--primary), #6366f1); position: relative;">
+                    </div>
+
+                    <div style="padding: 0 40px 40px; position: relative; margin-top: -50px;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+                            <div id="profile-avatar"
+                                style="width: 120px; height: 120px; border-radius: 50%; background: var(--bg-white); border: 5px solid var(--bg-white); display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 800; color: var(--primary); box-shadow: var(--shadow-md); overflow: hidden;">
+                                ?
+                            </div>
+                            <div style="display: flex; gap: 12px; margin-bottom: 10px;">
+                                <a href="settings.html" class="secondary-btn"
+                                    style="padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600;">
+                                    <i class="fas fa-cog"></i> Settings
+                                </a>
+                                <a href="profile-edit.html" class="btn-submit"
+                                    style="width: auto; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600;">
+                                    <i class="fas fa-edit"></i> Edit Profile
+                                </a>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 32px;">
+                            <h3 id="profile-fullName" style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">-
+                            </h3>
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <p id="profile-email"
+                                    style="color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 6px;">
+                                    <i class="far fa-envelope"></i> -
+                                </p>
+                                <span id="profile-role" class="status-badge"
+                                    style="background: rgba(37, 99, 235, 0.1); color: var(--primary); font-size: 11px; font-weight: 700; border-radius: 50px;">PATIENT</span>
+                            </div>
+                        </div>
+
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; padding-top: 32px; border-top: 1px solid var(--border-light);">
+                            <div class="info-group">
+                                <label
+                                    style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Phone
+                                    Number</label>
+                                <div id="profile-phone" style="font-weight: 600; color: var(--text-main);">-</div>
+                            </div>
+                            <div class="info-group">
+                                <label
+                                    style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Gender</label>
+                                <div id="profile-gender" style="font-weight: 600; color: var(--text-main);">-</div>
+                            </div>
+                            <div class="info-group">
+                                <label
+                                    style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Blood
+                                    Group</label>
+                                <div id="profile-blood" style="font-weight: 600; color: var(--danger);">-</div>
+                            </div>
+                            <div class="info-group">
+                                <label
+                                    style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Date
+                                    of Birth</label>
+                                <div id="profile-dob" style="font-weight: 600; color: var(--text-main);">-</div>
+                            </div>
+                            <div class="info-group" style="grid-column: 1 / -1;">
+                                <label
+                                    style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Current
+                                    Address</label>
+                                <div id="profile-address-full" style="font-weight: 600; color: var(--text-main);">-
+                                </div>
+                            </div>
+                            <div class="info-group" style="grid-column: 1 / -1;">
+                                <label
+                                    style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Medical
+                                    History</label>
+                                <div id="profile-medical"
+                                    style="font-weight: 500; background: var(--bg-light); padding: 20px; border-radius: 12px; color: var(--text-main); line-height: 1.6; border: 1px solid var(--border-light);">
+                                    -</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="js/profile.js"></script>
+    <script type="module">
+        import { injectSidebar } from './js/components/sidebar.js';
+        injectSidebar('profile');
+    </script>
+</body>
+
+</html>

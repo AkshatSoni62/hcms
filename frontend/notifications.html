@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HCMS - Notifications</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-portal.css">
+    <style>
+        /* Internal page specific if needed */
+    </style>
+</head>
+
+<body>
+    <div class="portal-container">
+        <!-- Sidebar injected here -->
+
+        <main class="content-area">
+            <div style="max-width: 700px; margin: 0 auto;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
+                    <div>
+                        <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">Notifications</h2>
+                        <p style="color: var(--text-muted);">Stay updated with your activities.</p>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button id="mark-all-read" class="action-btn" style="color: var(--primary);">
+                            Mark all read
+                        </button>
+                        <button id="clear-all-notifs" class="action-btn" style="color: var(--danger);">
+                            Clear all
+                        </button>
+                    </div>
+                </div>
+
+                <div id="notifications-list" class="modern-card" style="padding: 0; overflow: hidden;">
+                    <div style="padding: 40px; text-align: center; color: var(--text-muted);">
+                        <i class="fas fa-circle-notch fa-spin fa-2x"></i>
+                        <p style="margin-top: 12px;">Loading notifications...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { injectSidebar, updateNotificationDot } from './js/components/sidebar.js';
+        import { fetchNotifications, markAllNotificationsRead, markNotificationRead, clearAllNotifications } from './js/api.js';
+
+        injectSidebar('notifications');
+
+        const user = JSON.parse(localStorage.getItem('hcmsUser'));
+        if (!user || !user.id) {
+            console.error('No logged in user found for notifications');
+            window.location.href = 'login.html';
+        }
+
+        const loadNotifications = async () => {
+            const container = document.getElementById('notifications-list');
+            try {
+                const notifs = await fetchNotifications(user.id);
+                if (notifs.length === 0) {
+                    container.innerHTML = '<div style="padding: 60px; text-align: center; color: var(--text-muted);"><i class="fas fa-bell-slash fa-3x" style="opacity: 0.2;"></i><p style="margin-top: 16px;">All caught up!</p></div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                notifs.forEach(n => {
+                    const item = document.createElement('div');
+                    item.className = `notif-item ${n.read ? '' : 'unread'}`;
+                    
+                    let type = 'DEFAULT';
+                    let icon = 'fa-bell';
+
+                    if (n.type === 'NEW_COMMENT') { icon = 'fa-comment'; type = 'NEW_COMMENT'; }
+                    else if (n.type?.includes('UPVOTE')) { icon = 'fa-arrow-up'; type = 'UPVOTE'; }
+                    else if (n.type === 'STATUS_UPDATE') { icon = 'fa-info-circle'; type = 'STATUS_UPDATE'; }
+                    
+                    item.setAttribute('data-type', type);
+
+                    item.innerHTML = `
+                        <div class="notif-icon">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div style="flex-grow: 1;">
+                            <div style="font-size: 15px; margin-bottom: 4px; font-weight: 500;">${n.message}</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">${new Date(n.createdAt).toLocaleString()}</div>
+                        </div>
+                    `;
+
+                    item.onclick = async () => {
+                        if (!n.read) {
+                            await markNotificationRead(n.id);
+                            loadNotifications();
+                            updateNotificationDot();
+                        }
+
+                        // Contextual Redirection
+                        if (n.referenceId) {
+                            if (n.type === 'STATUS_UPDATE' || n.type === 'NEW_COMMENT' || n.type === 'NEW_COMPLAINT' || n.type?.includes('UPVOTE')) {
+                                window.location.href = `feed.html?highlight=${n.referenceId}`;
+                            }
+                        }
+                    };
+
+                    container.appendChild(item);
+                });
+            } catch (e) {
+                console.error('Detailed Notification Error:', e);
+                container.innerHTML = `<div style="padding: 40px; text-align: center; color: var(--danger);">
+                    <p>Failed to load notifications.</p>
+                    <p style="font-size: 12px; margin-top: 8px;">${e.message}</p>
+                </div>`;
+            }
+        };
+
+        const markBtn = document.getElementById('mark-all-read');
+        if (markBtn) {
+            markBtn.onclick = async () => {
+                await markAllNotificationsRead(user.id);
+                loadNotifications();
+                updateNotificationDot();
+            };
+        }
+
+        const clearBtn = document.getElementById('clear-all-notifs');
+        if (clearBtn) {
+            clearBtn.onclick = async () => {
+                if (confirm('Are you sure you want to clear all notifications?')) {
+                    await clearAllNotifications(user.id);
+                    loadNotifications();
+                    updateNotificationDot();
+                }
+            };
+        }
+
+        loadNotifications();
+    </script>
+</body>
+
+</html>

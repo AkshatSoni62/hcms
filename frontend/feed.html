@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HCMS Feed - Community Discussion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-portal.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+
+<body>
+    <div class="portal-container">
+        <!-- Sidebar injected here -->
+
+        <main class="content-area">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <header
+                    style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">Community Feed</h2>
+                        <p style="color: var(--text-muted);">See what's happening at your hospital.</p>
+                    </div>
+                    <button id="open-complaint-modal" class="btn-submit" style="width: auto; padding: 10px 20px;">
+                        <i class="fas fa-plus"></i> Submit Issue
+                    </button>
+                </header>
+
+                <div class="feed-controls">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="feed-search" placeholder="Search by title, hospital, or description...">
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-item">
+                            <i class="fas fa-filter"></i>
+                            <select id="filter-category">
+                                <option value="">All Categories</option>
+                                <option value="Room Hygiene">Room Hygiene</option>
+                                <option value="Bathroom / Toilet Issues">Bathroom / Toilet Issues</option>
+                                <option value="Electricity Problems">Electricity Problems</option>
+                                <option value="Water Supply Issues">Water Supply Issues</option>
+                                <option value="Internet / WiFi Problems">Internet / WiFi Problems</option>
+                                <option value="Mess / Food Issues">Mess / Food Issues</option>
+                                <option value="Furniture / Room Damage">Furniture / Room Damage</option>
+                                <option value="Noise / Disturbance">Noise / Disturbance</option>
+                                <option value="Security Issues">Security Issues</option>
+                                <option value="Other Complaints">Other Complaints</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <i class="fas fa-sort-amount-down"></i>
+                            <select id="filter-sort">
+                                <option value="recent">Recent</option>
+                                <option value="trending">Trending</option>
+                                <option value="upvoted">Most Upvoted</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <i class="fas fa-tasks"></i>
+                            <select id="filter-status">
+                                <option value="">All Statuses</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="IN_PROGRESS">In Progress</option>
+                                <option value="RESOLVED">Resolved</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="feed-list">
+                    <!-- Complaint cards will be injected here -->
+                    <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        <i class="fas fa-circle-notch fa-spin fa-2x"></i>
+                        <p style="margin-top: 12px;">Loading feed...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Simple Submit Modal -->
+    <div id="complaint-modal"
+        style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="modern-card"
+            style="width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto;">
+            <button onclick="document.getElementById('complaint-modal').style.display='none'"
+                style="position: absolute; right: 20px; top: 20px; border: none; background: none; cursor: pointer; font-size: 18px;">&times;</button>
+            <h3 style="margin-bottom: 24px;">Submit a Complaint</h3>
+            <form id="complaint-form">
+                <!-- Location Picker (mobile-first, map above fields) -->
+                <div class="location-picker-card" style="margin-bottom: 12px;">
+                    <div class="location-picker-map-wrap">
+                        <div id="complaint-map" class="location-picker-map" aria-label="Location map"></div>
+                        <button type="button" id="complaint-recenter-btn" class="location-picker-recenter-btn"
+                            title="Re-center to current location" aria-label="Re-center">
+                            <i class="fas fa-crosshairs"></i>
+                        </button>
+                        <div id="complaint-location-loading" class="location-picker-loading" style="display:none;">
+                            <i class="fas fa-circle-notch fa-spin"></i>
+                            <span>Fetching your location…</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin: 12px 0 8px;">
+                        <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px;">Enter
+                            Location / Area</label>
+                        <input type="text" id="comp-location-address" class="form-control"
+                            placeholder="e.g., Ward 3, Near OPD, Dharmsinh Desai Hospital">
+                        <button type="button" id="complaint-use-current-location-btn" class="btn secondary-btn"
+                            style="margin-top: 10px; width: 100%;">
+                            <i class="fas fa-location-crosshairs"></i>
+                            Use Current Location
+                        </button>
+                        <div id="complaint-location-error" class="location-picker-error" style="display:none;"></div>
+                        <div id="complaint-location-coords" class="location-picker-coords" style="margin-top: 8px;">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin: 12px 0 8px;">
+                        <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px;">Hospital
+                            Name <span style="color: var(--danger);">*</span></label>
+                        <input type="text" id="comp-hospital-name" class="form-control"
+                            placeholder="Enter Hospital Name" required>
+                    </div>
+
+                    <!-- Hidden values used in API payload -->
+                    <input type="hidden" id="comp-location-lat" />
+                    <input type="hidden" id="comp-location-lng" />
+                </div>
+
+                <input type="text" id="comp-title" class="form-control" placeholder="Title of the issue" required>
+                <textarea id="comp-desc" class="form-control" placeholder="Describe what happened..."
+                    style="height: 120px;" required></textarea>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <select id="comp-category" class="form-control" required>
+                        <option value="Room Hygiene">Room Hygiene</option>
+                        <option value="Bathroom / Toilet Issues">Bathroom / Toilet Issues</option>
+                        <option value="Electricity Problems">Electricity Problems</option>
+                        <option value="Water Supply Issues">Water Supply Issues</option>
+                        <option value="Internet / WiFi Problems">Internet / WiFi Problems</option>
+                        <option value="Mess / Food Issues">Mess / Food Issues</option>
+                        <option value="Furniture / Room Damage">Furniture / Room Damage</option>
+                        <option value="Noise / Disturbance">Noise / Disturbance</option>
+                        <option value="Security Issues">Security Issues</option>
+                        <option value="Other Complaints">Other Complaints</option>
+                    </select>
+                    <select id="comp-severity" class="form-control" required>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-top: 12px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px;">Attach Photo
+                        (Optional)</label>
+                    <div class="image-upload-area" id="image-upload-area">
+                        <input type="file" id="comp-image" accept="image/*" style="display: none;">
+                        <div class="upload-placeholder" id="upload-placeholder">
+                            <i class="fas fa-image fa-2x" style="color: var(--primary); margin-bottom: 8px;"></i>
+                            <p style="margin: 0; font-weight: 500;">Click to upload a photo</p>
+                            <span style="font-size: 11px; color: var(--text-muted);">PNG, JPG or GIF</span>
+                        </div>
+                        <div class="upload-preview" id="upload-preview" style="display: none; position: relative;">
+                            <img id="preview-img" src="" alt="Preview"
+                                style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px;">
+                            <button type="button" id="remove-image-btn"
+                                style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit" style="margin-top: 12px;">Submit Post</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="js/feed.js"></script>
+</body>
+
+</html>

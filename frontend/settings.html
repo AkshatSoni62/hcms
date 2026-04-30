@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HCMS - Settings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-portal.css">
+</head>
+
+<body>
+    <div class="portal-container">
+        <!-- Sidebar injected here -->
+
+        <main class="content-area">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <header style="margin-bottom: 32px;">
+                    <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">Settings</h2>
+                    <p style="color: var(--text-muted);">Manage your application preferences and account security.</p>
+                </header>
+
+                <div class="modern-card" style="margin-bottom: 24px;">
+                    <h3 style="font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-paint-brush" style="color: var(--primary);"></i> Appearance
+                    </h3>
+                    <div class="form-group">
+                        <label style="display: block; font-weight: 600; margin-bottom: 12px;">Theme Preference</label>
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                            <div class="theme-option" data-value="light"
+                                style="padding: 16px; border: 2px solid var(--border-light); border-radius: 12px; cursor: pointer; text-align: center;">
+                                <i class="fas fa-sun fa-2x" style="margin-bottom: 8px; color: #f59e0b;"></i>
+                                <div style="font-weight: 600;">Light</div>
+                            </div>
+                            <div class="theme-option" data-value="dark"
+                                style="padding: 16px; border: 2px solid var(--border-light); border-radius: 12px; cursor: pointer; text-align: center;">
+                                <i class="fas fa-moon fa-2x" style="margin-bottom: 8px; color: var(--primary);"></i>
+                                <div style="font-weight: 600;">Dark</div>
+                            </div>
+                            <div class="theme-option" data-value="system"
+                                style="padding: 16px; border: 2px solid var(--border-light); border-radius: 12px; cursor: pointer; text-align: center;">
+                                <i class="fas fa-desktop fa-2x"
+                                    style="margin-bottom: 8px; color: var(--secondary);"></i>
+                                <div style="font-weight: 600;">System</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modern-card" style="margin-bottom: 24px;">
+                    <h3 style="font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-bell" style="color: var(--warning);"></i> Notifications
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-light);">
+                            <div>
+                                <div style="font-weight: 600;">Email Notifications</div>
+                                <div style="font-size: 13px; color: var(--text-muted);">Receive updates about your
+                                    complaints via email</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="notif-email" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0;">
+                            <div>
+                                <div style="font-weight: 600;">Push Notifications</div>
+                                <div style="font-size: 13px; color: var(--text-muted);">Receive real-time alerts in this
+                                    browser</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="notif-push" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modern-card">
+                    <h3 style="font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-shield-alt" style="color: var(--success);"></i> Privacy
+                    </h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600;">Public Profile</div>
+                            <div style="font-size: 13px; color: var(--text-muted);">Allow other patients to see your
+                                name in the feed</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="privacy-profile" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div style="margin-top: 32px; display: flex; justify-content: flex-end; gap: 12px;">
+                    <button id="reset-settings" class="secondary-btn"
+                        style="padding: 12px 24px; border-radius: 10px;">Reset to Defaults</button>
+                    <button id="save-settings" class="btn-submit" style="width: auto; padding: 12px 32px;">Save
+                        Changes</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Styles for switches (simplified for now, can be moved to modern-portal.css) -->
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(20px);
+        }
+
+        .theme-option.active {
+            border-color: var(--primary) !important;
+            background: rgba(37, 99, 235, 0.05);
+        }
+    </style>
+
+    <script type="module" src="js/settings.js"></script>
+    <script type="module">
+        import { injectSidebar } from './js/components/sidebar.js';
+        injectSidebar('settings');
+    </script>
+</body>
+
+</html>

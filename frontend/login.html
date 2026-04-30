@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HCMS - Secure Access</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-portal.css">
+    <style>
+        :root {
+            --auth-bg: #f8fafc;
+            --auth-text: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --primary-gradient: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--auth-bg);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Split Layout */
+        .auth-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .auth-side-image {
+            flex: 1.2;
+            background: var(--primary-gradient);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 60px;
+            overflow: hidden;
+        }
+
+        @media (max-width: 900px) {
+            .auth-side-image { display: none; }
+        }
+
+        .auth-side-image::before {
+            content: "";
+            position: absolute;
+            top: -10%; right: -10%;
+            width: 50%; height: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            filter: blur(80px);
+            border-radius: 50%;
+        }
+
+        .auth-side-content {
+            position: relative;
+            z-index: 2;
+            max-width: 500px;
+            text-align: left;
+        }
+
+        .auth-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: #fff;
+            position: relative;
+        }
+
+        /* Glass Auth Card */
+        .auth-card {
+            width: 100%;
+            max-width: 440px;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header {
+            text-align: left;
+            margin-bottom: 32px;
+        }
+
+        .auth-header h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--auth-text);
+        }
+
+        .auth-header p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .tabs-modern {
+            display: flex;
+            gap: 24px;
+            border-bottom: 2px solid #f1f5f9;
+            margin-bottom: 32px;
+        }
+
+        .tab-modern-btn {
+            padding: 12px 0;
+            border: none;
+            background: none;
+            font-weight: 600;
+            font-size: 16px;
+            color: #94a3b8;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .tab-modern-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-modern-btn.active::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        /* Form Styling */
+        .form-group-modern {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group-modern label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i.prefix-icon {
+            position: absolute;
+            left: 16px;
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .input-modern {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+
+        .input-modern:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .input-modern.error {
+            border-color: #ef4444;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.3s;
+        }
+
+        .toggle-password:hover { color: var(--primary); }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .btn-premium {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: var(--primary);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-premium:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* OTP Screen Improvements */
+        .otp-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin: 32px 0;
+        }
+
+        .otp-digit {
+            width: 100%;
+            aspect-ratio: 1/1.2;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 800;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+
+        .otp-digit:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        /* Toasts */
+        .toast-box {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            animation: toastIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            border-left: 4px solid var(--primary);
+        }
+
+        .toast.error { border-left-color: #ef4444; }
+        .toast.success { border-left-color: #10b981; }
+
+        @keyframes toastIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Visual Side -->
+        <div class="auth-side-image">
+            <div class="auth-side-content">
+                <div style="font-size: 64px; margin-bottom: 24px;"><i class="fas fa-hand-holding-medical"></i></div>
+                <h1 style="font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 24px;">Your Voice for Better Hospital Standards</h1>
+                <p style="font-size: 18px; opacity: 0.9; line-height: 1.6;">Report hospital complaints, monitor resolution progress in real-time, and help us ensure every patient receives the care they deserve through transparent accountability.</p>
+            </div>
+        </div>
+
+        <!-- Auth Side -->
+        <div class="auth-main">
+            <div class="auth-card" id="main-card">
+                
+                <!-- STEP 1: CREDENTIALS -->
+                <div id="step-creds" class="auth-step active">
+                    <div class="auth-header">
+                        <h2 id="auth-title">Welcome back</h2>
+                        <p id="auth-subtitle">Welcome back! Please enter your details.</p>
+                    </div>
+
+                    <div class="tabs-modern">
+                        <button class="tab-modern-btn active" onclick="switchMode('login')">Sign In</button>
+                        <button class="tab-modern-btn" onclick="switchMode('signup')">Sign Up</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <div id="form-login">
+                        <div class="form-group-modern">
+                            <label>Email Address</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope prefix-icon"></i>
+                                <input type="email" id="login-email" class="input-modern" placeholder="Enter your email" autocomplete="username">
+                            </div>
+                        </div>
+                        <div class="form-group-modern">
+                            <label>Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock prefix-icon"></i>
+                                <input type="password" id="login-pass" class="input-modern" placeholder="••••••••" autocomplete="current-password">
+                                <i class="fas fa-eye-slash toggle-password" onclick="togglePass('login-pass', this)"></i>
+                            </div>
+                        </div>
+                        <div class="form-options">
+                            <label class="remember-me">
+                                <input type="checkbox" id="remember-me"> Remember me
+                            </label>
+                            <a href="#" onclick="showForgot()" style="color: var(--primary); text-decoration: none; font-weight: 600;">Forgot password?</a>
+                        </div>
+                        <button id="btn-login-init" class="btn-premium">
+                            Sign In <i class="fas fa-sign-in-alt"></i>
+                        </button>
+                    </div>
+
+                    <!-- Signup Form -->
+                    <div id="form-signup" style="display: none;">
+                        <div class="form-group-modern">
+                            <label>Full Name</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user prefix-icon"></i>
+                                <input type="text" id="reg-name" class="input-modern" placeholder="e.g. John Doe">
+                            </div>
+                        </div>
+                        <div class="form-group-modern">
+                            <label>Email Address</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope prefix-icon"></i>
+                                <input type="email" id="reg-email" class="input-modern" placeholder="name@gmail.com">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group-modern">
+                                <label>Password</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-lock prefix-icon"></i>
+                                    <input type="password" id="reg-pass" class="input-modern" style="padding-right: 40px;" placeholder="Min 8 chars">
+                                    <i class="fas fa-eye-slash toggle-password" onclick="togglePass('reg-pass', this)"></i>
+                                </div>
+                            </div>
+                            <div class="form-group-modern">
+                                <label>Confirm</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-check-circle prefix-icon"></i>
+                                    <input type="password" id="reg-pass-confirm" class="input-modern" placeholder="Repeat it">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-modern">
+                            <label>Role</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-users-cog prefix-icon"></i>
+                                <select id="reg-role" class="input-modern" onchange="toggleAdminKey()">
+                                    <option value="PATIENT">Patient / User</option>
+                                    <option value="ADMIN">Administrator</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="admin-key-group" class="form-group-modern" style="display: none;">
+                            <label style="color: var(--primary);">Admin Access Key</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-key prefix-icon"></i>
+                                <input type="password" id="reg-admin-key" class="input-modern" placeholder="Enter secret key">
+                            </div>
+                        </div>
+                        <button id="btn-signup-init" class="btn-premium">
+                            Create Account <i class="fas fa-user-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: OTP (Combined for Login/Signup/Reset) -->
+                <div id="step-otp" class="auth-step" style="display: none;">
+                    <div class="auth-header">
+                        <h2 id="otp-title">Verify Reality</h2>
+                        <p id="otp-subtitle">We've sent a 6-digit verification code to <br><strong id="display-email" style="color: var(--auth-text);"></strong></p>
+                    </div>
+                    
+                    <!-- New Password Fields (Only for Reset Mode) -->
+                    <div id="reset-pass-fields" style="display: none;">
+                        <div class="form-group-modern" style="margin-top: 24px;">
+                            <label>New Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock prefix-icon"></i>
+                                <input type="password" id="reset-pass" class="input-modern" placeholder="Min 8 characters">
+                                <i class="fas fa-eye-slash toggle-password" onclick="togglePass('reset-pass', this)"></i>
+                            </div>
+                        </div>
+                        <div class="form-group-modern">
+                            <label>Confirm New Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-check-circle prefix-icon"></i>
+                                <input type="password" id="reset-pass-confirm" class="input-modern" placeholder="Repeat new password">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="otp-grid">
+                        <input type="text" maxlength="1" class="otp-digit" id="otp-1">
+                        <input type="text" maxlength="1" class="otp-digit" id="otp-2">
+                        <input type="text" maxlength="1" class="otp-digit" id="otp-3">
+                        <input type="text" maxlength="1" class="otp-digit" id="otp-4">
+                        <input type="text" maxlength="1" class="otp-digit" id="otp-5">
+                        <input type="text" maxlength="1" class="otp-digit" id="otp-6">
+                    </div>
+                    <button id="btn-verify-otp" class="btn-premium">
+                        Verify & Continue <i class="fas fa-check-circle"></i>
+                    </button>
+                    <button id="btn-back-to-login" class="tab-modern-btn" onclick="location.reload()" style="width: 100%; margin-top: 16px; color: #64748b;">
+                        <i class="fas fa-arrow-left"></i> Back to Login
+                    </button>
+                    <p id="otp-resend-text" style="text-align: center; margin-top: 24px; color: #64748b; font-size: 14px;">
+                        Didn't receive it? <span id="resend-timer-area">Resend in <span id="resend-countdown">30</span>s</span>
+                        <a href="#" id="resend-otp-link" onclick="handleResend()" style="color: var(--primary); font-weight: 700; text-decoration: none; display: none;">Resend OTP</a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-box" id="toast-container"></div>
+
+    <script type="module">
+        import { sendOtp, verifyOtp, completeSignup, forgotPassword, resetPassword, loginUser } from './js/api.js';
+
+        let currentEmail = '';
+        let currentPass = '';
+        let currentName = '';
+        let currentRole = '';
+        let isSignup = false;
+        let isReset = false;
+
+        // --- AUTH REDIRECT CHECK ---
+        const existing = localStorage.getItem('hcmsUser');
+        if (existing) {
+            const user = JSON.parse(existing);
+            window.location.href = user.role === 'ADMIN' ? 'admin-dashboard.html' : 'patient-dashboard.html';
+        }
+
+        // --- PREFILL REMEMBER ME ---
+        const savedEmail = localStorage.getItem('hcmsRememberEmail');
+        if (savedEmail) {
+            document.getElementById('login-email').value = savedEmail;
+            document.getElementById('remember-me').checked = true;
+        }
+
+        // --- UI UTILS ---
+        window.switchMode = (mode) => {
+            isSignup = (mode === 'signup');
+            document.querySelectorAll('.tab-modern-btn').forEach(b => {
+                b.classList.toggle('active', (b.innerText === (isSignup ? 'Sign Up' : 'Sign In')));
+            });
+            document.getElementById('form-login').style.display = isSignup ? 'none' : 'block';
+            document.getElementById('form-signup').style.display = isSignup ? 'block' : 'none';
+            document.getElementById('auth-title').innerText = isSignup ? 'Create account' : 'Welcome back';
+            document.getElementById('auth-subtitle').innerText = isSignup ? 'Get started with your secure health portal' : 'Welcome back! Please enter your details.';
+        };
+
+        window.showForgot = async () => {
+            const email = sanitizeEmail(document.getElementById('login-email').value);
+            
+            if (!email || !email.includes('@')) {
+                return toast('Please enter your email to reset password', 'info');
+            }
+
+            try {
+                const btn = document.querySelector('.form-options a');
+                const originalText = btn.innerText;
+                btn.innerText = 'Sending...';
+                
+                await forgotPassword(email);
+                
+                isReset = true;
+                currentEmail = email;
+                
+                document.getElementById('display-email').textContent = email;
+                document.getElementById('otp-title').innerText = 'Reset Password';
+                document.getElementById('otp-subtitle').innerHTML = `Enter the code sent to <strong>${email}</strong> and your new password.`;
+                document.getElementById('reset-pass-fields').style.display = 'block';
+                document.getElementById('otp-resend-text').style.display = 'none';
+                
+                showStep('step-otp');
+                startResendTimer();
+                toast('Reset code sent to your email', 'success');
+            } catch (err) {
+                toast(err.message, 'error');
+            } finally {
+                const btn = document.querySelector('.form-options a');
+                if (btn) btn.innerText = 'Forgot password?';
+            }
+        };
+
+        window.togglePass = (id, icon) => {
+            const input = document.getElementById(id);
+            const isPass = input.type === 'password';
+            input.type = isPass ? 'text' : 'password';
+            icon.className = isPass ? 'fas fa-eye toggle-password' : 'fas fa-eye-slash toggle-password';
+        };
+
+        window.toggleAdminKey = () => {
+            const role = document.getElementById('reg-role').value;
+            document.getElementById('admin-key-group').style.display = (role === 'ADMIN') ? 'block' : 'none';
+        };
+
+        const toast = (msg, type = 'info') => {
+            const container = document.getElementById('toast-container');
+            const el = document.createElement('div');
+            el.className = `toast ${type}`;
+            const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle');
+            el.innerHTML = `<i class="fas ${icon}"></i> <span>${msg}</span>`;
+            container.appendChild(el);
+            setTimeout(() => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateX(50px)';
+                setTimeout(() => el.remove(), 400);
+            }, 4000);
+        };
+
+        // --- SANITIZATION ---
+        const sanitizeEmail = (email) => {
+            if (!email) return '';
+            // Strip everything except printable ASCII, lowercase, and trim
+            return email.replace(/[^\x20-\x7E]/g, '').toLowerCase().trim();
+        };
+
+        const showStep = (stepId) => {
+            document.querySelectorAll('.auth-step').forEach(s => s.style.display = 'none');
+            document.getElementById(stepId).style.display = 'block';
+        };
+
+        // --- RESEND TIMER LOGIC ---
+        let resendTimer = null;
+        window.startResendTimer = () => {
+            clearInterval(resendTimer);
+            let timeLeft = 30;
+            const timerArea = document.getElementById('resend-timer-area');
+            const countdown = document.getElementById('resend-countdown');
+            const resendLink = document.getElementById('resend-otp-link');
+
+            timerArea.style.display = 'inline';
+            resendLink.style.display = 'none';
+            countdown.innerText = timeLeft;
+
+            resendTimer = setInterval(() => {
+                timeLeft--;
+                countdown.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(resendTimer);
+                    timerArea.style.display = 'none';
+                    resendLink.style.display = 'inline';
+                }
+            }, 1000);
+        };
+
+        window.handleResend = async () => {
+            try {
+                toast('Sending a new code...', 'info');
+                if (isReset) {
+                    await forgotPassword(currentEmail);
+                } else {
+                    await sendOtp(currentEmail, currentPass, isSignup);
+                }
+                toast('New code sent!', 'success');
+                startResendTimer();
+            } catch (err) {
+                toast(err.message, 'error');
+            }
+        };
+
+        // OTP navigation
+        const otpDigits = document.querySelectorAll('.otp-digit');
+        otpDigits.forEach((el, idx) => {
+            el.oninput = (e) => {
+                if (e.target.value.length === 1 && idx < 5) otpDigits[idx+1].focus();
+            };
+            el.onkeydown = (e) => {
+                if (e.key === 'Backspace' && !e.target.value && idx > 0) otpDigits[idx-1].focus();
+            };
+        });
+
+        // --- FORM SUBMISSION ---
+        const handleInit = async (btnId, rawEmail, pass, name, role, passConfirm) => {
+            const email = sanitizeEmail(rawEmail);
+            
+            // Validations
+            if (!email || !email.includes('@')) return toast('Please enter a valid email', 'error');
+            if (pass.length < 8) return toast('Password must be at least 8 characters', 'error');
+            
+            if (isSignup) {
+                if (!name) return toast('Full name is required', 'error');
+                if (pass !== passConfirm) return toast('Passwords do not match', 'error');
+            }
+
+            const btn = document.getElementById(btnId);
+            const originalHtml = btn.innerHTML;
+            
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
+                
+                await sendOtp(email, pass, isSignup);
+                
+                // Remember Me
+                if (!isSignup && document.getElementById('remember-me').checked) {
+                    localStorage.setItem('hcmsRememberEmail', email);
+                } else {
+                    localStorage.removeItem('hcmsRememberEmail');
+                }
+
+                currentEmail = email;
+                currentPass = pass;
+                currentName = name;
+                currentRole = role;
+
+                document.getElementById('display-email').textContent = email;
+                showStep('step-otp');
+                startResendTimer();
+                toast('Verification code sent to your email', 'success');
+            } catch (err) {
+                toast(err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
+        };
+
+        document.getElementById('btn-login-init').onclick = async () => {
+            const email = sanitizeEmail(document.getElementById('login-email').value);
+            const pass = document.getElementById('login-pass').value;
+
+            if (!email || !email.includes('@')) return toast('Please enter a valid email', 'error');
+            if (pass.length < 8) return toast('Password must be at least 8 characters', 'error');
+
+            const btn = document.getElementById('btn-login-init');
+            const originalHtml = btn.innerHTML;
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Signing in...';
+
+                const user = await loginUser(email, pass);
+                
+                // Remember Me
+                if (document.getElementById('remember-me').checked) {
+                    localStorage.setItem('hcmsRememberEmail', email);
+                } else {
+                    localStorage.removeItem('hcmsRememberEmail');
+                }
+
+                toast('Welcome back!', 'success');
+                handleLoginSuccess(user);
+            } catch (err) {
+                toast(err.message || 'Login failed. Please check credentials.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
+        };
+
+        document.getElementById('btn-signup-init').onclick = () => {
+            handleInit('btn-signup-init',
+                document.getElementById('reg-email').value,
+                document.getElementById('reg-pass').value,
+                document.getElementById('reg-name').value,
+                document.getElementById('reg-role').value,
+                document.getElementById('reg-pass-confirm').value
+            );
+        };
+
+        document.getElementById('btn-verify-otp').onclick = async () => {
+            const otp = Array.from(otpDigits).map(i => i.value).join('');
+            console.log('DEBUG [UI]: Verifying OTP', { email: currentEmail, otp, isReset });
+            if (otp.length < 6) return toast('Enter the full 6-digit code', 'error');
+
+            const btn = document.getElementById('btn-verify-otp');
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verifying...';
+
+                const result = await verifyOtp(currentEmail, otp);
+
+                if (isReset) {
+                    const newPass = document.getElementById('reset-pass').value;
+                    const confirmPass = document.getElementById('reset-pass-confirm').value;
+                    
+                    if (newPass.length < 8) return toast('New password must be at least 8 characters', 'error');
+                    if (newPass !== confirmPass) return toast('Passwords do not match', 'error');
+                    
+                    await resetPassword(currentEmail, otp, newPass);
+                    toast('Password reset successfully! Please login.', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                    return;
+                }
+
+                if (result.status === 'NEW_USER' && isSignup) {
+                    const user = await completeSignup({
+                        fullName: currentName,
+                        email: currentEmail,
+                        password: currentPass,
+                        role: currentRole,
+                        adminKey: document.getElementById('reg-admin-key')?.value || ''
+                    });
+                    toast('Account created successfully!', 'success');
+                    handleLoginSuccess(user);
+                } else if (result.status === 'NEW_USER' && !isSignup) {
+                    toast('Account not found. Please sign up.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Verify & Continue <i class="fas fa-check-circle"></i>';
+                } else {
+                    toast('Identity verified', 'success');
+                    handleLoginSuccess(result);
+                }
+            } catch (err) {
+                toast(err.message || 'Verification failed', 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Verify & Continue <i class="fas fa-check-circle"></i>';
+            }
+        };
+
+        const handleLoginSuccess = (user) => {
+            localStorage.setItem('hcmsUser', JSON.stringify(user));
+            const role = user.role.toUpperCase();
+            setTimeout(() => {
+                window.location.href = role === 'ADMIN' ? 'admin-dashboard.html' : 'patient-dashboard.html';
+            }, 800);
+        };
+
+        // Global Enter Listener
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (document.getElementById('step-creds').style.display !== 'none') {
+                    if (isSignup) document.getElementById('btn-signup-init').click();
+                    else document.getElementById('btn-login-init').click();
+                } else if (document.getElementById('step-otp').style.display !== 'none') {
+                    document.getElementById('btn-verify-otp').click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

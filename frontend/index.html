@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HCMS - Welcome to Hospital Complaint Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-portal.css">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: #cbd5e1;
+            margin-bottom: 40px;
+        }
+
+        .cta-btns {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .btn-large {
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-outline {
+            border: 2px solid white;
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: #1e293b;
+        }
+
+        .features-grid {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .navbar {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo i {
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">
+            <i class="fas fa-hospital-alt"></i>
+            <span>HCMS</span>
+        </div>
+        <div class="cta-btns">
+            <a href="login.html" class="btn-large" style="color: #1e293b; text-decoration: none;">Login</a>
+            <a href="login.html?tab=register" class="btn-submit"
+                style="width: auto; padding: 12px 32px; text-decoration: none;">Get Started</a>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Resolve Hospital Issues Faster</h1>
+            <p class="hero-subtitle">The Hospital Complaint Management System (HCMS) helps you report medical issues, track resolutions in real-time, and hold healthcare providers accountable.</p>
+            <div class="cta-btns">
+                <a href="login.html" class="btn-large btn-primary">Join the Portal</a>
+                <a href="#features" class="btn-large btn-outline">Learn More</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="features-grid">
+        <div class="feature-card">
+            <i class="fas fa-rss feature-icon"></i>
+            <h3 class="feature-title">Community Complaint Feed</h3>
+            <p>Stay updated with patient-reported hospital issues. Upvote to prioritize urgent fixes and join the conversation.
+            </p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-bell feature-icon"></i>
+            <h3 class="feature-title">Resolution Tracking</h3>
+            <p>Receive instant updates as your hospital complaints move from pending to resolved. Transparent tracking for peace of mind.</p>
+        </div>
+    </section>
+
+    <footer style="text-align: center; padding: 40px; background: #f1f5f9; color: var(--text-muted);">
+        <p>&copy; 2026 Hospital Complaint Management System. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
