@@ -64,8 +64,8 @@ public class OtpService {
     }
 
     public void sendOtpEmail(String email, String otp) {
-        String subject = "HCMS Verification Code - " + otp;
-        String text = "Your verification code is: " + otp + "\n\nIf this doesn't work, use Master Code: 999999";
+        String subject = "Verification Code: " + otp;
+        String text = "Hello,\n\nYour HCMS verification code is: " + otp + "\n\nThis code will expire in 5 minutes.\n\nThank you,\nHCMS Team";
         
         try {
             emailService.sendSimpleEmail(email, subject, text);
