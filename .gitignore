@@ -26,3 +26,6 @@ dist/
 
 # Uploads / generated files
 backend/uploads/
+
+# Sensitive credentials - NEVER commit this
+credentials.txt
