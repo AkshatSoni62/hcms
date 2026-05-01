@@ -28,8 +28,7 @@ async function loadStatistics() {
 async function loadComplaints() {
     const user = JSON.parse(localStorage.getItem('hcmsUser'));
     const isAdmin = user && user.role === 'ADMIN';
-    const fakeUser = { id: -1 }; // admin does not own complaints by default
-    await loadComplaintsInto('complaints-list', fakeUser, {
+    await loadComplaintsInto('complaints-list', user, {
         onlyMine: false,
         showStatusControls: true,
         isAdmin: isAdmin,
